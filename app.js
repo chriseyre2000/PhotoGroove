@@ -5193,20 +5193,24 @@ var $elm$browser$Browser$sandbox = function (impl) {
 };
 var $author$project$PhotoGroove$update = F2(
 	function (msg, model) {
-		var _v0 = msg.description;
-		switch (_v0) {
+		switch (msg.$) {
 			case 'ClickedPhoto':
+				var url = msg.a;
 				return _Utils_update(
 					model,
-					{selectedUrl: msg.data});
-			case 'ClickSurpriseMe':
+					{selectedUrl: url});
+			case 'ClickedSize':
+				var size = msg.a;
+				return _Utils_update(
+					model,
+					{chosenSize: size});
+			default:
 				return _Utils_update(
 					model,
 					{selectedUrl: '2.jpeg'});
-			default:
-				return model;
 		}
 	});
+var $author$project$PhotoGroove$ClickSurpriseMe = {$: 'ClickSurpriseMe'};
 var $author$project$PhotoGroove$Large = {$: 'Large'};
 var $author$project$PhotoGroove$Small = {$: 'Small'};
 var $elm$html$Html$button = _VirtualDom_node('button');
@@ -5241,18 +5245,6 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$html$Html$Attributes$src = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'src',
-		_VirtualDom_noJavaScriptOrHtmlUri(url));
-};
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$PhotoGroove$urlPrefix = 'http://elm-in-action.com/';
-var $elm$html$Html$input = _VirtualDom_node('input');
-var $elm$html$Html$label = _VirtualDom_node('label');
-var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $author$project$PhotoGroove$sizeToString = function (size) {
 	switch (size.$) {
 		case 'Small':
@@ -5263,6 +5255,21 @@ var $author$project$PhotoGroove$sizeToString = function (size) {
 			return 'large';
 	}
 };
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$PhotoGroove$urlPrefix = 'http://elm-in-action.com/';
+var $author$project$PhotoGroove$ClickedSize = function (a) {
+	return {$: 'ClickedSize', a: a};
+};
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $author$project$PhotoGroove$viewSizeChooser = function (size) {
 	return A2(
@@ -5275,12 +5282,17 @@ var $author$project$PhotoGroove$viewSizeChooser = function (size) {
 				_List_fromArray(
 					[
 						$elm$html$Html$Attributes$type_('radio'),
-						$elm$html$Html$Attributes$name('size')
+						$elm$html$Html$Attributes$name('size'),
+						$elm$html$Html$Events$onClick(
+						$author$project$PhotoGroove$ClickedSize(size))
 					]),
 				_List_Nil),
 				$elm$html$Html$text(
 				$author$project$PhotoGroove$sizeToString(size))
 			]));
+};
+var $author$project$PhotoGroove$ClickedPhoto = function (a) {
+	return {$: 'ClickedPhoto', a: a};
 };
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
@@ -5323,7 +5335,7 @@ var $author$project$PhotoGroove$viewThumbnail = F2(
 							_Utils_eq(selectedUrl, thumb.url))
 						])),
 					$elm$html$Html$Events$onClick(
-					{data: thumb.url, description: 'ClickedPhoto'})
+					$author$project$PhotoGroove$ClickedPhoto(thumb.url))
 				]),
 			_List_Nil);
 	});
@@ -5347,8 +5359,7 @@ var $author$project$PhotoGroove$view = function (model) {
 				$elm$html$Html$button,
 				_List_fromArray(
 					[
-						$elm$html$Html$Events$onClick(
-						{data: '', description: 'ClickSurpriseMe'})
+						$elm$html$Html$Events$onClick($author$project$PhotoGroove$ClickSurpriseMe)
 					]),
 				_List_fromArray(
 					[
@@ -5376,7 +5387,9 @@ var $author$project$PhotoGroove$view = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$id('thumbnails')
+						$elm$html$Html$Attributes$id('thumbnails'),
+						$elm$html$Html$Attributes$class(
+						$author$project$PhotoGroove$sizeToString(model.chosenSize))
 					]),
 				A2(
 					$elm$core$List$map,

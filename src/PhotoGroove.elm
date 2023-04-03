@@ -6,7 +6,6 @@ import Html exposing (button, div, h1, h3, img, input, label, text, Html)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 
-
 urlPrefix : String
 urlPrefix = 
   "http://elm-in-action.com/"
@@ -25,15 +24,17 @@ type alias Model =
   , chosenSize : ThumbnailSize
   }
 
-type alias Msg =
-  {description : String, data : String }  
+type Msg 
+  = ClickedPhoto String
+  | ClickedSize ThumbnailSize
+  | ClickSurpriseMe
 
 view : Model -> Html Msg
 view model =
   div [ class "content" ]
      [ h1 [] [ text "Photo Groove" ]
        , button 
-         [onClick {description = "ClickSurpriseMe", data = "" }]
+         [onClick ClickSurpriseMe]
          [text "Surprise Me!"]
        , h3 [] [ text "Thumbnail Size:" ]
        , div [ id "chosese-size"]
@@ -52,7 +53,7 @@ viewThumbnail selectedUrl thumb =
   img
     [src (urlPrefix ++ thumb.url)
     , classList [("selected", selectedUrl == thumb.url) ] 
-    , onClick { description = "ClickedPhoto", data = thumb.url }
+    , onClick (ClickedPhoto thumb.url )
     ] 
     []
 
@@ -60,7 +61,7 @@ viewSizeChooser : ThumbnailSize -> Html Msg
 viewSizeChooser size =
   label []
     [
-      input [ type_ "radio", name "size" ] []
+      input [ type_ "radio", name "size", onClick (ClickedSize size) ] []
     , text (sizeToString size)
     ]
 
@@ -99,14 +100,13 @@ getPhotoUrl index =
 
 update : Msg -> Model -> Model
 update msg model = 
-  case msg.description of
-  "ClickedPhoto" ->
-    { model | selectedUrl = msg.data}
-  "ClickSurpriseMe" ->
+  case msg of
+  ClickedPhoto url ->
+    { model | selectedUrl = url}
+  ClickedSize size ->
+    { model | chosenSize = size }
+  ClickSurpriseMe ->
     { model | selectedUrl = "2.jpeg"}  
-  _ ->
-    model  
-
 
 main = 
   Browser.sandbox
